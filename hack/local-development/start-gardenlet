@@ -32,7 +32,7 @@ else
 fi
 
 GARDEN_KUBECONFIG="${GARDEN_KUBECONFIG:-$kubeconfig}"
-
+echo "$GARDEN_KUBECONFIG"
 # determine the seed to manage; if multiple seeds exist on the
 # garden, the SEED_NAME env variable must be set
 if [ -n "${SEED_NAME:-}" ]; then
@@ -55,7 +55,7 @@ else
       ;;
   esac
 fi
-
+echo "get seed config"
 # cleanup a bit to make the generated configuration file look a bit neater
 tmpFile="$DEV_DIR/seed-$SEED_NAME.yaml"
 echo "$seedConfig" | yq eval 'del(
@@ -98,7 +98,7 @@ if [ -z "${SEED_KUBECONFIG:-}" ]; then
     yq eval '.data.kubeconfig' - |
     base64 -d > "$SEED_KUBECONFIG"
 fi
-
+echo "$SEED_KUBECONFIG"
 # generate temporary chart values
 GARDENLET_CHARTS_DIR=$REPO_ROOT/charts/gardener/gardenlet
 GARDENLET_CHARTS_RUNTIME_DIR="$GARDENLET_CHARTS_DIR/charts/runtime"
@@ -139,9 +139,19 @@ else
 
   echo "Starting gardenlet for seed $SEED_NAME..."
 
-  KUBECONFIG="${SEED_KUBECONFIG_GARDENLET_TOKEN}" \
-  GARDEN_KUBECONFIG="$GARDEN_KUBECONFIG" \
-  IMAGEVECTOR_OVERWRITE="$file_imagevector_overwrite" \
+  #cp "${SEED_KUBECONFIG_GARDENLET_TOKEN}" "${DEV_DIR}/t_seed_kubeconfig_gardenlet_token.conf"
+  #cp "$GARDEN_KUBECONFIG" "${DEV_DIR}/t_garden_kubeconfig.conf"
+  #cp "$file_imagevector_overwrite" "${DEV_DIR}/t_imagevector_overwrite.yaml"
+  #cp "$configFile" "${DEV_DIR}/t_gardenlet_configfile.yaml"
+  #exit 1
+  configFile="/Users/i058544/go/src/github.com/gardener/gardener/dev/t_gardenlet_configfile.yaml"
+  #KUBECONFIG="${SEED_KUBECONFIG_GARDENLET_TOKEN}" \
+  #GARDEN_KUBECONFIG="$GARDEN_KUBECONFIG" \
+  #IMAGEVECTOR_OVERWRITE="$file_imagevector_overwrite" \
+  KUBECONFIG="/Users/i058544/go/src/github.com/gardener/gardener/dev/t_seed_kubeconfig_gardenlet_token.conf" \
+  GARDEN_KUBECONFIG="/Users/i058544/go/src/github.com/gardener/gardener/dev/t_garden_kubeconfig.conf" \
+  IMAGEVECTOR_OVERWRITE="/Users/i058544/go/src/github.com/gardener/gardener/dev/t_gardenlet_image_vector_all.json" \
+  IMAGEVECTOR_OVERWRITE_COMPONENTS="/Users/i058544/go/src/github.com/gardener/gardener/dev/t_gardenlet_image_vector_all_component.yaml" \
   GO111MODULE=on \
       go run \
         -mod=vendor \

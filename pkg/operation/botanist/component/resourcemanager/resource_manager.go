@@ -580,7 +580,7 @@ func (r *resourceManager) ensureDeployment(ctx context.Context) error {
 			},
 		}
 
-		if r.secrets.Server.Name != "" {
+		if r.secrets.Server.Name == "" {
 			metav1.SetMetaDataAnnotation(&deployment.Spec.Template.ObjectMeta, "checksum/secret-"+r.secrets.Server.Name, r.secrets.Server.Checksum)
 			deployment.Spec.Template.Spec.Volumes = append(deployment.Spec.Template.Spec.Volumes, corev1.Volume{
 				Name: volumeNameCerts,
@@ -707,7 +707,7 @@ func (r *resourceManager) computeCommand() []string {
 		cmd = append(cmd, "--target-disable-cache")
 	}
 	cmd = append(cmd, fmt.Sprintf("--port=%d", serverPort))
-	if r.secrets.Server.Name != "" {
+	if r.secrets.Server.Name == "" {
 		cmd = append(cmd, fmt.Sprintf("--tls-cert-dir=%s", volumeMountPathCerts))
 	}
 	if r.secrets.Kubeconfig.Name != "" {

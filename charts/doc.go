@@ -17,5 +17,5 @@ package charts
 
 const (
 	// Path is the path to the charts directory.
-	Path = "charts"
+	Path = "/Users/i058544/go/src/github.com/gardener/gardener/charts"
 )
